@@ -1,0 +1,63 @@
+services:
+  broker:
+    image: vmalz/senshamart-broker:latest
+    environment:
+      NODE_ENV: production
+      BROKER_NAME: "broker1"
+      BROKER_PEERS: '["ws://miner:3002"]'
+      BROKER_KEYPAIR: "MHQCAQEEIJkTMFb1C/BwMmJjV/JwjToUtpRoR+NUjMYDw2yxEvwboAcGBSuBBAAKoUQDQgAE2reNrMtyXVzNhqp4yN1U9IPmmFGHv+8cStaY7+8asFq2bcIDA9fMwyXUF5ObIyPGCVkR6yZl1hN+/w76wCL31g=="
+      MINER_PUBLIC_KEY: "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEy3KpuqTwidKdNhuenbjJBqIBdEXLXwYpdpnfYIz4KT1y6I7dj7CUknARzAo80i46PwBU6Pm0b/ek7Mdhirc0VA=="
+      FUSEKI_URL: "http://fuseki:3030/ds"
+    ports:
+      - 5001:5001
+      - 5002:5002
+      - 5003:5003
+    volumes: 
+      - "./build/broker/broker.out:/usr/src/app/data/broker.out"
+      - "./build/broker/broker_blockchain.db:/usr/src/app/broker_blockchain.db"
+    networks:
+      - senshamart-network
+    entrypoint: ["/usr/src/app/build/broker/entrypoint.sh"]
+    command: ["node", "/usr/src/app/build/broker/broker-app.js"]
+
+  miner:
+    image: vmalz/senshamart-miner:latest
+    environment:
+      NODE_ENV: production
+      MINER_PUBLIC_KEY: "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEy3KpuqTwidKdNhuenbjJBqIBdEXLXwYpdpnfYIz4KT1y6I7dj7CUknARzAo80i46PwBU6Pm0b/ek7Mdhirc0VA=="
+      MINER_KEYPAIR: "MHQCAQEEID7Bky/4KVz7K1lxs4g3y30dVLF88O7G0LsIMZ2gVWatoAcGBSuBBAAKoUQDQgAEy3KpuqTwidKdNhuenbjJBqIBdEXLXwYpdpnfYIz4KT1y6I7dj7CUknARzAo80i46PwBU6Pm0b/ek7Mdhirc0VA=="
+      FUSEKI_URL: "http://fuseki:3030/ds"
+    ports:
+      - 3002:3002
+    volumes: 
+      - "./build/miner/miner.out:/usr/src/app/data/miner.out"
+      - "./build/miner/miner_blockchain.db:/usr/src/app/miner_blockchain.db"
+    networks:
+      - senshamart-network
+    entrypoint: ["/usr/src/app/build/miner/entrypoint.sh"]
+    command: ["node", "/usr/src/app/build/miner/miner-app.js"]
+
+  wallet:
+    image: vmalz/senshamart-wallet:latest
+    environment:
+      NODE_ENV: production
+      WALLET_KEYPAIR: "MHQCAQEEIEvkdskOpJRe4FJ4vApY10OtMRLwpwqFUblw16xyxj1coAcGBSuBBAAKoUQDQgAE5REoNkUVRgHH+4co5yyDOg6nID5E0Hd6CK3XOPUKclT9Sp3+dZE5rhQIy6fmAWu6t2p75Ep6U8gXu4esMp94Aw=="
+      MINER_PUBLIC_KEY: "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEy3KpuqTwidKdNhuenbjJBqIBdEXLXwYpdpnfYIz4KT1y6I7dj7CUknARzAo80i46PwBU6Pm0b/ek7Mdhirc0VA=="
+      WALLET_PEERS: '["ws://miner:3002"]'
+      FUSEKI_URL: "http://fuseki:3030/ds"
+    ports:
+      - 7001:7001
+      - 7002:7002
+    volumes: 
+      - "./build/wallet/wallet.out:/usr/src/app/data/wallet.out"
+      - "./build/wallet/wallet_blockchain.db:/usr/src/app/wallet_blockchain.db"
+    networks:
+      - senshamart-network
+    entrypoint: ["/usr/src/app/build/wallet/entrypoint.sh"]
+    command: ["node", "/usr/src/app/build/wallet/wallet-app.js"]
+
+networks:
+  senshamart-network:
+    name: senshamart-network
+    driver: bridge
+    external: true

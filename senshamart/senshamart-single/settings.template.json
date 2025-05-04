@@ -1,0 +1,11 @@
+{
+  "miner-public-key": "${MINER_PUBLIC_KEY}",
+  "wallet-keypair": "${WALLET_KEYPAIR}",
+  "miner-keypair": "${MINER_KEYPAIR}",
+  "broker-keypair": "${BROKER_KEYPAIR}",
+  "broker-name": "${BROKER_NAME}",
+  "public-wallet-chain-server-peers": ${WALLET_PEERS},
+  "miner-chain-server-peers": ${MINER_PEERS},
+  "broker-chain-server-peers": ${BROKER_PEERS},
+  "public-wallet-fuseki": "${FUSEKI_URL}"
+}
