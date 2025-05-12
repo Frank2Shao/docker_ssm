@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wallet
+spec:
+  serviceName: wallet
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wallet
+  template:
+    metadata:
+      labels:
+        app: wallet
+    spec:
+      containers:
+      - name: wallet
+        image: vmalz/kube-senshamart-wallet:latest
+        volumeMounts:
+        - name: config-volume
+          mountPath: /usr/src/app/build/wallet/data/settings.json
+          subPath: settings.json
+        - name: data-volume
+          mountPath: /usr/src/app/build/wallet/data
+        env:
+        - name: NODE_ENV
+          value: production
+      volumes:
+      - name: config-volume
+        configMap:
+          name: wallet-config
+  volumeClaimTemplates:  # ✅ stays here under spec
+  - metadata:
+      name: data-volume
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+

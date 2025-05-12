@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# Allow only necessary files and folders
+!build/
+!src/network/
+!package.json
+!package-lock.json
+!settings.json

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: miner
+spec:
+  serviceName: miner
+  replicas: 1
+  selector:
+    matchLabels:
+      app: miner
+  template:
+    metadata:
+      labels:
+        app: miner
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: miner
+        image: vmalz/kube-senshamart-miner:latest
+        volumeMounts:
+        - name: config-volume
+          mountPath: /usr/src/app/build/miner/data/settings.json
+          subPath: settings.json
+        - name: data-volume
+          mountPath: /usr/src/app/build/miner/data
+        env:
+        - name: NODE_ENV
+          value: production
+      volumes:
+      - name: config-volume
+        configMap:
+          name: miner-config
+  volumeClaimTemplates:  # ✅ stays here under spec
+  - metadata:
+      name: data-volume
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+

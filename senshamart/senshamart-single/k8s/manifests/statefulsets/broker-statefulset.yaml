@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: broker
+spec:
+  serviceName: broker
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broker
+  template:
+    metadata:
+      labels:
+        app: broker
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: broker
+        image: vmalz/kube-senshamart-broker:latest
+        volumeMounts:
+        - name: config-volume
+          mountPath: /usr/src/app/build/broker/data/settings.json # Future update change path to /usr/src/app/settings.json when the path in broker app is updated.
+          subPath: settings.json
+        - name: data-volume
+          mountPath: /usr/src/app/build/broker/data
+        env:
+        - name: NODE_ENV
+          value: production
+      volumes:  
+      - name: config-volume
+        configMap:
+          name: broker-config
+  volumeClaimTemplates: 
+  - metadata:
+      name: data-volume
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+

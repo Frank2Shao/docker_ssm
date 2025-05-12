@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wallet-config
+data:
+  settings.json: |
+    {
+      "miner-public-key": "",
+      "wallet-keypair": "MHQCAQEEIAEjeicF4u4SIAbO4VsAlRo2VFsei9DfmAR+X5PFZkzNoAcGBSuBBAAKoUQDQgAEiNGNAr9uDLn5g3b3FbDSeG3OxCLdzcvw7RGZJqsuZNrjpsme6qRNP4wYyPj7Q9sjLZGIp5k64yE+ROdISKsnMw==",
+      "miner-keypair": "",
+      "broker-keypair": "",
+      "broker-name": "",
+      "public-wallet-chain-server-peers": [
+        "http://miner-0.miner.default.svc.cluster.local:3002"
+      ],
+      "miner-chain-server-peers": [
+      ],
+      "broker-chain-server-peers": [
+        ""
+      ],
+      "public-wallet-fuseki": "http://host.docker.internal:3030/ds"
+    }
